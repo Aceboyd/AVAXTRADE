@@ -10,7 +10,7 @@ import About from '../components/About';
 
 function LandingPage() {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen ">
       <Hero />
       <MarketTicker />
       <Benefits />
