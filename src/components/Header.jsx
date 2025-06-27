@@ -4,6 +4,11 @@ import { Link } from 'react-router-dom';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  // Function to close the mobile menu
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,18 +65,60 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-800">
             <nav className="flex flex-col space-y-4">
-              <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-              <a href="#markets" className="text-gray-300 hover:text-white transition-colors">Markets</a>
-              <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
-              <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
+              <Link
+                to="/"
+                id="home"
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={closeMenu}
+              >
+                Home
+              </Link>
+              <a
+                href="#markets"
+                id="markets"
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={closeMenu}
+              >
+                Markets
+              </a>
+              <a
+                href="#features"
+                id="features"
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={closeMenu}
+              >
+                Features
+              </a>
+              <a
+                href="#pricing"
+                id="pricing"
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={closeMenu}
+              >
+                Pricing
+              </a>
+              <a
+                href="#about"
+                id="about"
+                className="text-gray-300 hover:text-white transition-colors"
+                onClick={closeMenu}
+              >
+                About
+              </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Link to="/login" className="text-gray-300 hover:text-white transition-colors text-left">
+                <Link
+                  to="/login"
+                  id="login"
+                  className="text-gray-300 hover:text-white transition-colors text-left"
+                  onClick={closeMenu}
+                >
                   Sign In
                 </Link>
                 <Link
                   to="/signup"
+                  id="signup"
                   className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-6 py-2 rounded-lg hover:from-blue-600 hover:to-cyan-500 transition-all duration-300"
+                  onClick={closeMenu}
                 >
                   Get Started
                 </Link>
