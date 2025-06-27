@@ -1,4 +1,6 @@
 import React from 'react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import Hero from '../components/Hero';
 import MarketTicker from '../components/MarketTicker';
 import Benefits from '../components/Benefits';
@@ -10,16 +12,20 @@ import About from '../components/About';
 
 function LandingPage() {
   return (
-    <main className="min-h-screen ">
-      <Hero />
-      <MarketTicker />
-      <Benefits />
-      <SupportedCryptos />
-      <Testimonials />
-      <Pricing />
-      <MobileApp />
-      <About />
-    </main>
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-grow">
+        <Hero />
+        <MarketTicker />
+        <Benefits />
+        <SupportedCryptos />
+        <Testimonials />
+        <Pricing />
+        <MobileApp />
+        <About />
+      </main>
+      <Footer />
+    </div>
   );
 }
 
