@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, Shield, Chrome, Globe, Zap } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Shield, Chrome, Globe, Zap } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-const Signup = () => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -19,11 +19,6 @@ const Signup = () => {
     setIsLoading(true);
 
     // Basic validation
-    if (name.length < 2) {
-      setError('Name must be at least 2 characters');
-      setIsLoading(false);
-      return;
-    }
     if (!email.includes('@') || email.length < 3) {
       setError('Please enter a valid email');
       setIsLoading(false);
@@ -38,12 +33,25 @@ const Signup = () => {
     // Simulate API call
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log('Signup successful:', { name, email, password });
-      navigate('/login');
+      console.log('Login successful:', { email, password, rememberMe });
+      navigate('/dashboard'); // Updated to navigate to dashboard
     } catch (err) {
-      setError('Signup failed. Please try again.');
+      setError('Login failed. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleMetaMaskConnect = async () => {
+    if (window.ethereum) {
+      try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        console.log('MetaMask connected');
+      } catch (err) {
+        setError('Failed to connect MetaMask');
+      }
+    } else {
+      setError('MetaMask not detected. Please install MetaMask.');
     }
   };
 
@@ -78,11 +86,11 @@ const Signup = () => {
         </div>
 
         <div className="w-full max-w-md relative z-10">
-          {/* Signup Form */}
+          {/* Login Form */}
           <div className="bg-gray-800/40 backdrop-blur-xl rounded-2xl p-8 border border-gray-700/50 shadow-2xl">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Create Your Account</h2>
-              <p className="text-gray-400">Join AVAXTRADE to start trading</p>
+              <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
+              <p className="text-gray-400">Sign in to your trading account</p>
             </div>
 
             {error && (
@@ -92,27 +100,9 @@ const Signup = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name Field */}
+              {/* Email/Username Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-gray-300">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
-                  <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Enter your full name"
-                    required
-                    aria-describedby={error ? 'name-error' : undefined}
-                  />
-                </div>
-              </div>
-
-              {/* Email Field */}
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-gray-300">Email</label>
+                <label htmlFor="email" className="text-sm font-medium text-gray-300">Email or Username</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                   <input
@@ -121,7 +111,7 @@ const Signup = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                    placeholder="Enter your email"
+                    placeholder="Enter your email or username"
                     required
                     aria-describedby={error ? 'email-error' : undefined}
                   />
@@ -154,72 +144,48 @@ const Signup = () => {
                 </div>
               </div>
 
+              {/* Remember me and Forgot Password */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 text-blue-500 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-2"
+                  />
+                  <span className="ml-2 text-sm text-gray-300">Remember me</span>
+                </label>
+                <button
+                  type="button"
+                  className="text-sm text-blue-400 hover:text-blue-300 transition-colors"
+                  aria-label="Recover password"
+                >
+                  Forgot password?
+                </button>
+              </div>
               {/* Submit Button */}
               <button
                 type="submit"
                 disabled={isLoading}
                 className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-4 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                aria-label="Sign up"
+                aria-label="Sign in"
               >
                 {isLoading ? (
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                 ) : (
                   <>
                     <Zap className="w-5 h-5 mr-2" aria-hidden="true" />
-                    Sign Up
+                    Sign In
                   </>
                 )}
               </button>
-
-              {/* Social Login Options */}
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-600"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="bg-gray-800 px-4 text-gray-400">Or continue with</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  className="flex items-center justify-center px-4 py-3 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/50 hover:border-gray-500 transition-all duration-300"
-                  aria-label="Sign up with Google"
-                >
-                  <Chrome className="w-5 h-5 mr-2" aria-hidden="true" />
-                  Google
-                </button>
-                <button
-                  type="button"
-                  className="flex items-center justify-center px-4 py-3 border border-gray-600 rounded-xl text-gray-300 hover:bg-gray-700/50 hover:border-gray-500 transition-all duration-300"
-                  aria-label="Sign up with Apple"
-                >
-                  <Globe className="w-5 h-5 mr-2" aria-hidden="true" />
-                  Apple
-                </button>
-              </div>
             </form>
-
-            {/* Login CTA */}
-            <div className="mt-8 text-center">
-              <p className="text-gray-400">
-                Already have an account?{' '}
-                <button
-                  onClick={() => navigate('/login')}
-                  className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-                  aria-label="Sign in to existing account"
-                >
-                  Sign in
-                </button>
-              </p>
-            </div>
           </div>
 
           {/* Security Notice */}
           <div className="mt-6 mb-6 text-center">
             <p className="text-xs text-gray-500">
-              By signing up, you agree to our{' '}
+              By signing in, you agree to our{' '}
               <a href="#" className="text-blue-400 hover:text-blue-300">Terms of Service</a> and{' '}
               <a href="#" className="text-blue-400 hover:text-blue-300">Privacy Policy</a>
             </p>
@@ -231,4 +197,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;
