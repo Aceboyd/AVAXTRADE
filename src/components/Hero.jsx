@@ -13,7 +13,7 @@ const Hero = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
           {/* Left Content */}
-          <div className="text-center lg:text-left order-2 lg:order-1">
+          <div className="text-center lg:text-left lg:order-1">
             {/* Badge */}
             <div className="inline-flex items-center bg-gradient-to-r from-blue-500/20 to-cyan-400/20 border border-blue-500/30 rounded-full px-2.5 py-1 sm:px-3 sm:py-1.5 lg:px-4 lg:py-2 mb-3 sm:mb-4 lg:mb-6">
               <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-blue-400 mr-1 sm:mr-1.5 lg:mr-2" />
@@ -89,7 +89,7 @@ const Hero = () => {
           </div>
 
           {/* Right Content - Trading Dashboard Image */}
-          <div className="relative order-1 lg:order-2 mb-6 sm:mb-8 lg:mb-0">
+          <div className="relative lg:order-2">
             {/* Main Dashboard Image */}
             <div className="relative mx-2 sm:mx-4 lg:mx-0">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl blur-xl"></div>

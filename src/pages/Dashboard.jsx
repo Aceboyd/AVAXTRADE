@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Wallet, 
   Upload, 
@@ -24,11 +25,8 @@ import {
   History,
   Bell,
   User,
-  Camera,
-  FileText,
-  CreditCard,
   Menu,
-  ChevronLeft
+  CreditCard
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -108,48 +106,75 @@ const Dashboard = () => {
   const OverviewContent = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Portfolio</h3>
-            <button
-              onClick={() => setShowBalance(!showBalance)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
-            </button>
-          </div>
-          <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            {showBalance ? '$7,728.35' : '****'}
-          </div>
-          <div className="text-green-600 text-sm flex items-center">
-            <TrendingUp className="w-4 h-4 mr-1" />
-            +12.5% this month
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">KYC Status</h3>
-            <Shield className="w-5 h-5 text-gray-400" />
-          </div>
-          <div className="mb-2">
-            <StatusBadge status={kycStatus} />
-          </div>
-          <div className="text-sm text-gray-600">
-            {kycStatus === 'pending' && 'Verification in progress'}
-            {kycStatus === 'approved' && 'Fully verified account'}
-            {kycStatus === 'rejected' && 'Please resubmit documents'}
+        {/* Total Portfolio Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px]">
+          <div className="p-4 sm:p-6 flex flex-col flex-grow">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Total Portfolio</h3>
+              <button
+                onClick={() => setShowBalance(!showBalance)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                {showBalance ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
+              </button>
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                {showBalance ? '$7,728.35' : '****'}
+              </div>
+              <div className="text-green-600 text-sm flex items-center">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                +12.5% this month
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 sm:col-span-2 lg:col-span-1">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Security Score</h3>
-            <Lock className="w-5 h-5 text-gray-400" />
+        {/* KYC Status Card */}
+        <Link to="/kyc-upload" className="block">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px] hover:bg-gray-50 transition-colors">
+            <div className="p-4 sm:p-6 flex flex-col flex-grow">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">KYC Status</h3>
+                <Shield className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="flex-grow flex flex-col justify-between">
+                <div className="mb-2">
+                  <StatusBadge status={kycStatus} />
+                </div>
+                <div className="text-sm text-gray-600">
+                  {kycStatus === 'pending' && 'Verification in progress'}
+                  {kycStatus === 'approved' && 'Fully verified account'}
+                  {kycStatus === 'rejected' && 'Please resubmit documents'}
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">85%</div>
-          <div className="text-sm text-gray-600">
-            Enable 2FA to improve security
+        </Link>
+
+        {/* Main and Profit Balance Card */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px] sm:col-span-2 lg:col-span-1">
+          <div className="p-4 sm:p-6 flex flex-col flex-grow">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Main and Profit Balance</h3>
+              <CreditCard className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="flex-grow flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-600">Main</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-gray-900">
+                    {showBalance ? '$7,728.35' : '****'}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="text-sm text-gray-600">Profit</div>
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">
+                    {showBalance ? '$966.04' : '****'}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -497,9 +522,12 @@ const Dashboard = () => {
               </ul>
             </div>
 
-            <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
+            <Link
+              to="/kyc-upload"
+              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors text-center"
+            >
               Start New Verification
-            </button>
+            </Link>
           </div>
         )}
       </div>
@@ -888,8 +916,9 @@ const Dashboard = () => {
                 <Bell className="w-5 h-5" />
               </button>
               
-              <button className={`hidden sm:flex p-2 rounded-lg ${darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>
+              <button className={`hidden sm:flex items-center space-x-2 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>
                 <User className="w-5 h-5" />
+                <span className="text-sm">John Doe</span>
               </button>
               
               <button className={`hidden sm:flex items-center space-x-2 px-3 py-2 rounded-lg ${darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`}>

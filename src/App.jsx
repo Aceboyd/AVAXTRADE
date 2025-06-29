@@ -4,6 +4,7 @@ import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
+import KYCUpload from './pages/KYCUpload';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/kyc-upload" element={<KYCUpload />} />
         {/* Catch-all route for 404 errors */}
         <Route path="*" element={<div className="text-center p-4">404 - Page Not Found</div>} />
       </Routes>
