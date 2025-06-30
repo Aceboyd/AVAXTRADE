@@ -26,7 +26,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <Link to="/" className="text-gray-300 hover:text-white transition-colors">Home</Link>
-            <a href="#markets" className="text-gray-300 hover:text-white transition-colors">Markets</a>
+            <a href="#tradingview-widget" className="text-gray-300 hover:text-white transition-colors">Markets</a>
             <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
             <a href="#pricing" className="text-gray-300 hover:text-white transition-colors">Pricing</a>
             <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
