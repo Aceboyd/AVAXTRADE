@@ -29,7 +29,7 @@ const MarketTicker = () => {
   }, []);
 
   return (
-    <div id="tradingview-widget" className="w-full overflow-hidden h-20" />
+    <div id="markets" className="w-full overflow-hidden h-20" />
   );
 };
 
