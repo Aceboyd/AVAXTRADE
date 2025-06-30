@@ -12,7 +12,7 @@ const YouTubeVideo = () => {
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto text-center sm:text-left">
-            Discover the basics of cryptocurrency with this beginner-friendly video. Click play to start learning!
+            Discover the basics of cryptocurrency's with this beginner-friendly video. Click play to start learning!
           </p>
         </div>
         <div className="relative max-w-full sm:max-w-4xl mx-auto">
