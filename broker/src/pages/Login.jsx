@@ -248,11 +248,11 @@ const Login = () => {
             </form>
 
             {/* Debug Information (remove in production) */}
-            <div className="mt-6 p-3 bg-gray-700/30 rounded-lg text-xs text-gray-400">
+            {/* <div className="mt-6 p-3 bg-gray-700/30 rounded-lg text-xs text-gray-400">
               <strong>Debug Info:</strong>
               <div>localStorage token: {localStorage.getItem('token') ? 'Present' : 'Not found'}</div>
               <div>sessionStorage token: {sessionStorage.getItem('token') ? 'Present' : 'Not found'}</div>
-            </div>
+            </div> */}
           </div>
 
           {/* Security Notice */}
