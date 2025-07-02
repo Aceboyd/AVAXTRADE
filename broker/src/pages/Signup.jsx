@@ -1,25 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, Shield, Chrome, Globe, Zap } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Zap } from 'lucide-react';
+import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [name, setName] = useState('');
+  const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(''); // Added success state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess(''); // Clear previous success message
     setIsLoading(true);
 
-    // Basic validation
-    if (name.length < 2) {
+    // Basic client-side validation
+    if (fullname.length < 2) {
       setError('Name must be at least 2 characters');
       setIsLoading(false);
       return;
@@ -35,13 +38,32 @@ const Signup = () => {
       return;
     }
 
-    // Simulate API call
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log('Signup successful:', { name, email, password });
-      navigate('/login');
+      // Make API call to Django backend
+      await axios.post('https://avaxbacklog.onrender.com/api/auth/register/', {
+        email,
+        fullname,
+        password
+      });
+
+      console.log('Signup successful:', { fullname, email });
+      setSuccess('Account created successfully! Redirecting to login...');
+      // Delay navigation to show success message
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000); // 3-second delay
     } catch (err) {
-      setError('Signup failed. Please try again.');
+      // Handle errors from the API
+      if (err.response && err.response.data) {
+        const errorMessage = err.response.data.message || 
+                            err.response.data.email || 
+                            err.response.data.fullname || 
+                            err.response.data.password || 
+                            'Signup failed. Please try again.';
+        setError(errorMessage);
+      } else {
+        setError('An error occurred. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -91,21 +113,27 @@ const Signup = () => {
               </div>
             )}
 
+            {success && (
+              <div className="bg-green-500/20 text-green-300 p-3 rounded-xl mb-4 text-sm text-center" role="alert">
+                {success}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Name Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-gray-300">Full Name</label>
+                <label htmlFor="fullname" className="text-sm font-medium text-gray-300">Full Name</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                   <input
-                    id="name"
+                    id="fullname"
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={fullname}
+                    onChange={(e) => setFullname(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-gray-700/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     placeholder="Enter your full name"
                     required
-                    aria-describedby={error ? 'name-error' : undefined}
+                    aria-describedby={error ? 'fullname-error' : undefined}
                   />
                 </div>
               </div>

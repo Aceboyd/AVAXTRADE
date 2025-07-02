@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, Shield, Chrome, Globe, Zap } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Zap } from 'lucide-react';
+import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -18,7 +19,7 @@ const Login = () => {
     setError('');
     setIsLoading(true);
 
-    // Basic validation
+    // Basic client-side validation
     if (!email.includes('@') || email.length < 3) {
       setError('Please enter a valid email');
       setIsLoading(false);
@@ -30,13 +31,76 @@ const Login = () => {
       return;
     }
 
-    // Simulate API call
+    console.log('Attempting login with:', { email, password: '***' });
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log('Login successful:', { email, password, rememberMe });
-      navigate('/dashboard'); // Updated to navigate to dashboard
+      // Make API request to Django backend
+      const response = await axios.post('https://avaxbacklog.onrender.com/api/auth/login/', {
+        email,
+        password,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 15000, // 15 second timeout for slow servers
+      });
+
+      console.log('Login response:', response.data);
+
+      // Extract token from response
+      const token = response.data.key;
+      if (!token) {
+        console.error('No token found in response:', response.data);
+        setError('Login failed - no authentication token received from server');
+        setIsLoading(false);
+        return;
+      }
+
+      console.log('Token found, saving to storage:', token.substring(0, 20) + '...');
+
+      // Clear any existing tokens
+      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+
+      // Save token based on remember me preference
+      if (rememberMe) {
+        localStorage.setItem('token', token);
+        console.log('Token saved to localStorage');
+      } else {
+        sessionStorage.setItem('token', token);
+        console.log('Token saved to sessionStorage');
+      }
+
+      // Verify token was saved
+      const savedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
+      console.log('Token verification - saved successfully:', !!savedToken);
+
+      if (savedToken) {
+        console.log('Navigating to dashboard...');
+        navigate('/dashboard');
+      } else {
+        setError('Failed to save authentication token');
+      }
     } catch (err) {
-      setError('Login failed. Please try again.');
+      console.error('Login error:', err);
+
+      if (axios.isAxiosError(err)) {
+        if (err.code === 'ECONNABORTED') {
+          setError('Request timeout - please check your connection and try again');
+        } else if (err.response?.status === 401) {
+          setError('Invalid email or password');
+        } else if (err.response?.status === 422) {
+          setError('Please check your email and password format');
+        } else if (err.response?.status >= 500) {
+          setError('Server error - please try again later');
+        } else if (!err.response) {
+          setError('Network error - please check your internet connection');
+        } else {
+          setError(err.response?.data?.message || err.response?.data?.error || `Login failed (${err.response.status})`);
+        }
+      } else {
+        setError('An unexpected error occurred during login');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -47,6 +111,7 @@ const Login = () => {
       try {
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         console.log('MetaMask connected');
+        // Add backend integration for MetaMask if applicable
       } catch (err) {
         setError('Failed to connect MetaMask');
       }
@@ -163,6 +228,7 @@ const Login = () => {
                   Forgot password?
                 </button>
               </div>
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -180,6 +246,13 @@ const Login = () => {
                 )}
               </button>
             </form>
+
+            {/* Debug Information (remove in production) */}
+            <div className="mt-6 p-3 bg-gray-700/30 rounded-lg text-xs text-gray-400">
+              <strong>Debug Info:</strong>
+              <div>localStorage token: {localStorage.getItem('token') ? 'Present' : 'Not found'}</div>
+              <div>sessionStorage token: {sessionStorage.getItem('token') ? 'Present' : 'Not found'}</div>
+            </div>
           </div>
 
           {/* Security Notice */}

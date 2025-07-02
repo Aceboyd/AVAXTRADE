@@ -5,7 +5,6 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import KYCUpload from './pages/KYCUpload';
-import DataFetcher from './components/DataFetcher';
 
 function App() {
   return (
@@ -19,7 +18,6 @@ function App() {
         {/* Catch-all route for 404 errors */}
         <Route path="*" element={<div className="text-center p-4">404 - Page Not Found</div>} />
       </Routes>
-      <DataFetcher />
     </BrowserRouter>
     
   );
