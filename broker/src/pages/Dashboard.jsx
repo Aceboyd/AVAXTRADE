@@ -459,7 +459,7 @@ const Dashboard = () => {
         </div>
 
         <Link to="/kyc-upload" className="block">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min- h-[180px] sm:min-h-[200px] hover:bg-gray-50 transition-colors">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px] hover:bg-gray-50 transition-colors">
             <div className="p-4 sm:p-6 flex flex-col flex-grow">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900">KYC Status</h3>
@@ -698,6 +698,8 @@ const Dashboard = () => {
   );
 
   const WithdrawalsContent = () => {
+    const [withdrawalStatus, setWithdrawalStatus] = useState(null);
+
     const handleWithdrawalSubmit = async (e) => {
       e.preventDefault();
       const token = sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -709,6 +711,7 @@ const Dashboard = () => {
         setError('Please enter amount and address');
         return;
       }
+      setWithdrawalStatus('pending');
       try {
         const response = await axios.post(
           'https://avaxbacklog.onrender.com/api/withdraw/',
@@ -727,15 +730,17 @@ const Dashboard = () => {
         );
         setError(null);
         setWithdrawalData({ amount: '', address: '' });
+        setWithdrawalStatus('completed');
         alert('Withdrawal request submitted successfully');
       } catch (err) {
         setError('Failed to submit withdrawal: ' + (err.response?.data?.message || err.message));
+        setWithdrawalStatus('failed');
       }
     };
 
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 text-black">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Withdraw Funds</h3>
           <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
             {networks.map((network) => (
@@ -743,7 +748,10 @@ const Dashboard = () => {
                 key={network.symbol}
                 network={network}
                 isActive={selectedNetwork === network.symbol}
-                onClick={setSelectedNetwork}
+                onClick={(symbol) => {
+                  setSelectedNetwork(symbol);
+                  setWithdrawalStatus(null); // Reset status when switching networks
+                }}
               />
             ))}
           </div>
@@ -777,6 +785,12 @@ const Dashboard = () => {
               <span>Submit Withdrawal</span>
             </button>
           </form>
+          {withdrawalStatus && (
+            <div className="mt-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Withdrawal Status</h4>
+              <StatusBadge status={withdrawalStatus} />
+            </div>
+          )}
           <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <div className="flex items-start space-x-3">
               <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
