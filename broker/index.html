@@ -3,8 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>AVAXTRADE - Secure Cryptocurrency Trading Platform</title>
+    <style>
+      /* Ensure body takes full height and avoids overflow issues */
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+
+      /* Ensure #root is flexible for mobile */
+      #root {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      /* Smartsupp chat widget adjustments for mobile */
+      @media (max-width: 768px) {
+        #smartsupp_widget {
+          bottom: 10px !important; /* Prevent overlap with content */
+          right: 10px !important;
+          transform: scale(0.9); /* Slightly scale down for smaller screens */
+        }
+
+        /* Ensure chat button is touch-friendly */
+        .smartsupp-chat-button {
+          min-width: 60px !important;
+          min-height: 60px !important;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
@@ -20,6 +51,6 @@
         c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
       })(document);
     </script>
-    <noscript> Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+    <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
   </body>
 </html>
