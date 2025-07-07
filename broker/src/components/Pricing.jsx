@@ -113,15 +113,15 @@ const Pricing = () => {
           <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-300">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>Advanced AI trading</span>
+              <span>Long Term</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>Maximum of only 5% drawdown</span>
+              <span>Short Term</span>
             </div>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>Expert Risk Management</span>
+              <span>Retirement plan</span>
             </div>
           </div>
         </div>

@@ -63,18 +63,14 @@ const Dashboard = () => {
     total_balance: '0.00',
     btc: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
     eth: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
-    bsc: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
-    avax: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
-    matic: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
+    sol: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
+    tron: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
+    ltc: { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
   });
   const [withdrawalData, setWithdrawalData] = useState({ amount: '', address: '' });
   const [kycData, setKycData] = useState({ document: null });
   const [securityData, setSecurityData] = useState({ currentPassword: '', newPassword: '', twoFactorCode: '' });
-  const [transactions, setTransactions] = useState([
-    { id: '1', type: 'deposit', network: 'BTC', amount: '0.00542', status: 'completed', time: '2 hours ago', txId: 'abc123...def456' },
-    { id: '2', type: 'withdrawal', network: 'ETH', amount: '0.5', status: 'pending', time: '1 day ago', txId: 'xyz789...uvw012' },
-    { id: '3', type: 'deposit', network: 'AVAX', amount: '50.0', status: 'completed', time: '3 days ago', txId: 'mno345...pqr678' },
-  ]);
+  const [transactions, setTransactions] = useState([]);
   const [accountSettings, setAccountSettings] = useState({ fullname: '', email: '', phone: '' });
 
   const navigate = useNavigate();
@@ -83,9 +79,9 @@ const Dashboard = () => {
   const networks = [
     { symbol: 'BTC', name: 'Bitcoin', color: 'text-orange-500', bgColor: 'bg-orange-50', binanceTicker: 'BTCUSDT', coingeckoId: 'bitcoin' },
     { symbol: 'ETH', name: 'Ethereum', color: 'text-blue-500', bgColor: 'bg-blue-50', binanceTicker: 'ETHUSDT', coingeckoId: 'ethereum' },
-    { symbol: 'BSC', name: 'Binance Smart Chain', color: 'text-yellow-500', bgColor: 'bg-yellow-50', binanceTicker: 'BNBUSDT', coingeckoId: 'binancecoin' },
-    { symbol: 'AVAX', name: 'Avalanche', color: 'text-red-500', bgColor: 'bg-red-50', binanceTicker: 'AVAXUSDT', coingeckoId: 'avalanche-avax' },
-    { symbol: 'MATIC', name: 'Polygon', color: 'text-purple-500', bgColor: 'bg-purple-50', binanceTicker: 'MATICUSDT', coingeckoId: 'matic-network' }
+    { symbol: 'SOL', name: 'Solana', color: 'text-teal-500', bgColor: 'bg-teal-50', binanceTicker: 'SOLUSDT', coingeckoId: 'solana' },
+    { symbol: 'TRON', name: 'Tron', color: 'text-red-500', bgColor: 'bg-red-50', binanceTicker: 'TRXUSDT', coingeckoId: 'tron' },
+    { symbol: 'LTC', name: 'Litecoin', color: 'text-gray-500', bgColor: 'bg-gray-50', binanceTicker: 'LTCUSDT', coingeckoId: 'litecoin' }
   ];
 
   const sidebarItems = [
@@ -137,8 +133,7 @@ const Dashboard = () => {
 
       updatedWallet.total_balance = (
         parseFloat(updatedWallet.main_balance || 0) +
-        parseFloat(updatedWallet.profit_balance || 0) +
-        totalCryptoValue
+        parseFloat(updatedWallet.profit_balance || 0)
       ).toFixed(2);
 
       return updatedWallet;
@@ -146,7 +141,7 @@ const Dashboard = () => {
     setLastUpdated(new Date().toLocaleTimeString('en-US', { timeZone: 'Africa/Lagos' }));
   };
 
-  // Fetch user data and crypto prices with CoinGecko
+  // Fetch user data, crypto prices, and transactions
   useEffect(() => {
     let intervalId = null;
 
@@ -238,7 +233,9 @@ const Dashboard = () => {
             email: userData.email || '',
             id: userData.id || userData.user_id || '',
             phone: userData.phone || userData.phone_number || '',
-            avatar: userData.avatar || userData.profile_picture || ''
+            avatar: userData.avatar || userData.profile_picture || '',
+            kyc_status: userData.kyc_status || 'pending',
+            kyc_photo: userData.kyc_photo || ''
           };
           setUser(normalizedUser);
           setAccountSettings({
@@ -246,6 +243,7 @@ const Dashboard = () => {
             email: normalizedUser.email,
             phone: normalizedUser.phone
           });
+          setKycStatus(normalizedUser.kyc_status.toLowerCase());
         } else {
           setError('Invalid user data received from server');
         }
@@ -258,25 +256,43 @@ const Dashboard = () => {
           ),
           btc: userData.balances?.btc || { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
           eth: userData.balances?.eth || { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
-          bsc: userData.balances?.bsc || { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
-          avax: userData.balances?.avax || { amount: '10.0', usd: '0.00', price: '0.00', change24h: '0.00' },
-          matic: userData.balances?.matic || { amount: '100.0', usd: '0.00', price: '0.00', change24h: '0.00' },
+          sol: userData.balances?.sol || { amount: '0.00', usd: '0.00', price: '0.00', change24h: '0.00' },
+          tron: userData.balances?.tron || { amount: '10.0', usd: '0.00', price: '0.00', change24h: '0.00' },
+          ltc: userData.balances?.ltc || { amount: '100.0', usd: '0.00', price: '0.00', change24h: '0.00' },
         };
         setWalletData(normalizedWalletData);
-
-        if (userData.kyc_status) {
-          setKycStatus(userData.kyc_status.toLowerCase());
-        }
 
         if (userData.two_factor_enabled !== undefined) {
           setTwoFactorEnabled(userData.two_factor_enabled);
         }
 
-        // Initial price fetch
+        // Fetch transactions
+        const transactionsResponse = await axios.get('https://avaxbacklog.onrender.com/api/transactions/', {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json',
+          },
+          timeout: 15000,
+        });
+
+        const normalizedTransactions = transactionsResponse.data.map(tx => ({
+          id: tx.id,
+          type: tx.transaction_type.toLowerCase(),
+          network: tx.crypto_type.toUpperCase(),
+          amount: parseFloat(tx.amount).toFixed(8),
+          status: tx.transaction_status.toLowerCase(),
+          time: new Date(tx.created_at).toLocaleString('en-US', {
+            timeZone: 'Africa/Lagos',
+            dateStyle: 'short',
+            timeStyle: 'short'
+          }),
+          txId: tx.id.slice(0, 6) + '...' + tx.id.slice(-6)
+        }));
+        setTransactions(normalizedTransactions);
+
         const prices = await fetchPrices();
         updateWalletData(prices, normalizedWalletData);
 
-        // Poll prices every 30 seconds
         intervalId = setInterval(async () => {
           const newPrices = await fetchPrices();
           setWalletData(prev => {
@@ -296,7 +312,7 @@ const Dashboard = () => {
             localStorage.removeItem('token');
             navigate('/login');
           } else if (error.response?.status === 404) {
-            setError('User endpoint not found - please contact support');
+            setError('User or transactions endpoint not found - please contact support');
           } else if (error.response?.status >= 500) {
             setError('Server error - please try again later');
           } else if (!error.response) {
@@ -321,7 +337,6 @@ const Dashboard = () => {
     };
   }, [navigate]);
 
-  // Helper function to get user display name
   const getUserDisplayName = () => {
     if (isLoading) return 'Loading...';
     if (error) return 'User';
@@ -330,7 +345,6 @@ const Dashboard = () => {
     return 'User';
   };
 
-  // Logout function
   const handleLogout = async () => {
     try {
       const token = sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -352,7 +366,6 @@ const Dashboard = () => {
     }
   };
 
-  // Component definitions
   const NetworkTab = ({ network, isActive, onClick }) => (
     <button
       onClick={() => onClick(network.symbol)}
@@ -372,7 +385,8 @@ const Dashboard = () => {
       completed: { color: 'text-green-700 bg-green-100', icon: CheckCircle, text: 'Completed' },
       failed: { color: 'text-red-700 bg-red-100', icon: X, text: 'Failed' },
       approved: { color: 'text-green-700 bg-green-100', icon: CheckCircle, text: 'Approved' },
-      rejected: { color: 'text-red-700 bg-red-100', icon: X, text: 'Rejected' }
+      rejected: { color: 'text-red-700 bg-red-100', icon: X, text: 'Rejected' },
+      'in review': { color: 'text-blue-700 bg-blue-100', icon: Clock, text: 'In Review' }
     };
 
     const config = statusConfig[status] || statusConfig.pending;
@@ -458,7 +472,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <Link to="/kyc-upload" className="block">
+        <div className={kycStatus === 'in review' || kycStatus === 'approved' ? 'cursor-not-allowed' : 'block'}>
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px] hover:bg-gray-50 transition-colors">
             <div className="p-4 sm:p-6 flex flex-col flex-grow">
               <div className="flex items-center justify-between mb-4">
@@ -475,13 +489,14 @@ const Dashboard = () => {
                 </div>
                 <div className="text-sm text-gray-600">
                   {kycStatus === 'pending' && 'Verification in progress'}
+                  {kycStatus === 'in review' && 'Documents under review'}
                   {kycStatus === 'approved' && 'Fully verified account'}
                   {kycStatus === 'rejected' && 'Please resubmit documents'}
                 </div>
               </div>
             </div>
           </div>
-        </Link>
+        </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[180px] sm:min-h-[200px] sm:col-span-2 lg:col-span-1">
           <div className="p-4 sm:p-6 flex flex-col flex-grow">
@@ -590,29 +605,33 @@ const Dashboard = () => {
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Recent Transactions</h3>
           <div className="space-y-3 sm:space-y-4">
-            {transactions.map((tx) => (
-              <div key={tx.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 rounded-full ${tx.type === 'deposit' ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center`}>
-                    {tx.type === 'deposit' ? (
-                      <Download className="w-4 h-4 text-green-600" />
-                    ) : (
-                      <Upload className="w-4 h-4 text-red-600" />
-                    )}
+            {transactions.length === 0 ? (
+              <div className="text-center text-gray-600">No transactions found</div>
+            ) : (
+              transactions.slice(0, 3).map((tx) => (
+                <div key={tx.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full ${tx.type === 'deposit' ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center`}>
+                      {tx.type === 'deposit' ? (
+                        <Download className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <Upload className="w-4 h-4 text-red-600" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-900 capitalize text-sm sm:text-base">{tx.type}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">{tx.network} • {tx.time}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="font-medium text-gray-900 capitalize text-sm sm:text-base">{tx.type}</div>
-                    <div className="text-xs sm:text-sm text-gray-500">{tx.network} • {tx.time}</div>
+                  <div className="text-right">
+                    <div className="font-medium text-gray-900 text-sm sm:text-base">{tx.amount}</div>
+                    <div className="mt-1">
+                      <StatusBadge status={tx.status} />
+                    </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="font-medium text-gray-900 text-sm sm:text-base">{tx.amount}</div>
-                  <div className="mt-1">
-                    <StatusBadge status={tx.status} />
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -648,9 +667,9 @@ const Dashboard = () => {
               <div className="font-mono text-xs sm:text-sm text-gray-900 break-all">
                 {selectedNetwork === 'BTC' && 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'}
                 {selectedNetwork === 'ETH' && '0x742d35Cc6634C0532925a3b8D4c2E43f4a4f2B7e'}
-                {selectedNetwork === 'BSC' && '0x742d35Cc6634C0532925a3b8D4c2E43f4a4f2B7e'}
-                {selectedNetwork === 'AVAX' && '0x742d35Cc6634C0532925a3b8D4c2E43f4a4f2B7e'}
-                {selectedNetwork === 'MATIC' && '0x742d35Cc6634C0532925a3b8D4c2E43f4a4f2B7e'}
+                {selectedNetwork === 'SOL' && '7C4B3g7y2f2f3g4h5j6k7l8m9n0p1q2r3s4t5u6v7w8x9y0z1'}
+                {selectedNetwork === 'TRON' && 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb'}
+                {selectedNetwork === 'LTC' && 'LTC123456789abcdefghijklmnopqrstuvwxyz1234'}
               </div>
             </div>
             
@@ -686,9 +705,9 @@ const Dashboard = () => {
               <ul className="mt-1 space-y-1">
                 <li>• Bitcoin (BTC): 2 confirmations</li>
                 <li>• Ethereum (ETH): 12 confirmations</li>
-                <li>• BSC: 15 confirmations</li>
-                <li>• Avalanche: 1 confirmation</li>
-                <li>• Polygon: 128 confirmations</li>
+                <li>• Solana (SOL): 1 confirmation</li>
+                <li>• Tron (TRON): 1 confirmation</li>
+                <li>• Litecoin (LTC): 6 confirmations</li>
               </ul>
             </div>
           </div>
@@ -750,7 +769,7 @@ const Dashboard = () => {
                 isActive={selectedNetwork === network.symbol}
                 onClick={(symbol) => {
                   setSelectedNetwork(symbol);
-                  setWithdrawalStatus(null); // Reset status when switching networks
+                  setWithdrawalStatus(null);
                 }}
               />
             ))}
@@ -832,17 +851,17 @@ const Dashboard = () => {
         );
         setError(null);
         setKycData({ document: null });
-        setKycStatus('pending');
+        setKycStatus('in review');
         alert('KYC document submitted successfully');
       } catch (err) {
         setError('Failed to submit KYC document: ' + (err.response?.data?.message || err.message));
       }
     };
 
-    // Progress bar configuration based on KYC status
     const kycProgress = {
       rejected: { progress: 0, label: 'Rejected - Please resubmit documents', color: 'bg-red-500' },
-      pending: { progress: 50, label: 'Pending - Your documents are under review', color: 'bg-yellow-500' },
+      pending: { progress: 0, label: 'Pending - Upload your documents', color: 'bg-yellow-500' },
+      'in review': { progress: 50, label: 'In Review - Your documents are under review', color: 'bg-blue-500' },
       approved: { progress: 100, label: 'Approved - Your account is fully verified', color: 'bg-green-500' }
     };
 
@@ -862,6 +881,16 @@ const Dashboard = () => {
             </div>
             <p className="mt-2 text-sm text-gray-600">{currentProgress.label}</p>
           </div>
+          {user?.kyc_photo && (
+            <div className="mb-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Uploaded Document</h4>
+              <img
+                src={user.kyc_photo}
+                alt="KYC Document"
+                className="max-w-full h-auto rounded-lg border border-gray-200"
+              />
+            </div>
+          )}
           <form onSubmit={handleKycSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">Upload Document (PDF, PNG, JPG)</label>
@@ -870,13 +899,14 @@ const Dashboard = () => {
                 accept=".pdf,.png,.jpg,.jpeg"
                 onChange={(e) => setKycData({ ...kycData, document: e.target.files[0] })}
                 className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={kycStatus === 'in review' || kycStatus === 'approved'}
               />
             </div>
             <button
               type="submit"
-              disabled={kycStatus === 'approved'}
+              disabled={kycStatus === 'in review' || kycStatus === 'approved'}
               className={`w-full py-3 px-6 rounded-lg flex items-center justify-center space-x-2 ${
-                kycStatus === 'approved'
+                kycStatus === 'in review' || kycStatus === 'approved'
                   ? 'bg-gray-400 text-white cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700 transition-colors'
               }`}
@@ -1211,17 +1241,20 @@ const Dashboard = () => {
                     <button
                       key={item.id}
                       onClick={() => {
+                        if (item.id === 'kyc' && (kycStatus === 'in review' || kycStatus === 'approved')) return;
                         setActiveTab(item.id);
                         setMobileMenuOpen(false);
                       }}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                        activeTab === item.id
-                          ? darkMode
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-blue-50 text-blue-700 border-blue-200'
-                          : darkMode
-                            ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        item.id === 'kyc' && (kycStatus === 'in review' || kycStatus === 'approved')
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                          : activeTab === item.id
+                            ? darkMode
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-blue-50 text-blue-700 border-blue-200'
+                            : darkMode
+                              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                     >
                       <IconComponent className="w-5 h-5" />
@@ -1258,15 +1291,20 @@ const Dashboard = () => {
                   return (
                     <button
                       key={item.id}
-                      onClick={() => setActiveTab(item.id)}
+                      onClick={() => {
+                        if (item.id === 'kyc' && (kycStatus === 'in review' || kycStatus === 'approved')) return;
+                        setActiveTab(item.id);
+                      }}
                       className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                        activeTab === item.id
-                          ? darkMode
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-blue-50 text-blue-700 border-blue-200'
-                          : darkMode
-                            ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                        item.id === 'kyc' && (kycStatus === 'in review' || kycStatus === 'approved')
+                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                          : activeTab === item.id
+                            ? darkMode
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-blue-50 text-blue-700 border-blue-200'
+                            : darkMode
+                              ? 'text-gray-400 hover:text-white hover:bg-gray-700'
+                              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                       }`}
                     >
                       <IconComponent className="w-5 h-5" />
