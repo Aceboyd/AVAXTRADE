@@ -77,20 +77,6 @@ const Security = ({ twoFactorEnabled, setTwoFactorEnabled }) => {
             />
           </div>
           
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Two-Factor Authentication (2FA) {twoFactorEnabled ? 'Enabled' : 'Disabled'}
-            </label>
-            <input
-              type="text"
-              value={securityData.twoFactorCode}
-              onChange={(e) => setSecurityData({ ...securityData, twoFactorCode: e.target.value })}
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder={twoFactorEnabled ? 'Enter code to disable 2FA' : 'Enter code to enable 2FA'}
-              disabled={isSubmitting}
-            />
-          </div>
-          
           <button
             type="submit"
             disabled={isSubmitting}
