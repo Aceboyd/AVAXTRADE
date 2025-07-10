@@ -8,11 +8,11 @@ const Deposits = () => {
 
   const getDepositAddress = (network) => {
     const addresses = {
-      'BTC': 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-      'ETH': '0x742d35Cc6634C0532925a3b8D4c2E43f4a4f2B7e',
-      'SOL': '7C4B3g7y2f2f3g4h5j6k7l8m9n0p1q2r3s4t5u6v7w8x9y0z1',
-      'TRON': 'T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWwb',
-      'LTC': 'LTC123456789abcdefghijklmnopqrstuvwxyz1234'
+      'BTC': 'bc1q5nq0zvaachxvr0w8375r3y6zq3m3r07e0zwrrm',
+      'ETH': '0x25d1129d0f86a389AaC0E8e9008f02A21bBC3617',
+      'SOL': 'BtFgBXXcofS4BFogY9heEK9pSR9zZmo4NHtSNQ7MC5MZ',
+      'TRON': 'LWh7E38D76iuihP2pvGybc4dgn2Lgi2Y2z',
+      'LTC': 'THW64yhsfjKLkgaEiLB97CgVE8kvnSuV5e'
     };
     return addresses[network] || '';
   };
