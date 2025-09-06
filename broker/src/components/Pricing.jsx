@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Pricing = () => {
   const plans = [
@@ -99,11 +100,13 @@ const Pricing = () => {
                 ))}
               </ul>
 
-              <button
-                className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${plan.buttonStyle}`}
-              >
-                {plan.buttonText}
-              </button>
+              <Link to="/login">
+                <button
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${plan.buttonStyle}`}
+                >
+                  {plan.buttonText}
+                </button>
+              </Link>
             </div>
           ))}
         </div>
