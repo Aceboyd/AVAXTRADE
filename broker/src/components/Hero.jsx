@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { TrendingUp, Shield, Clock, Users } from 'lucide-react';
 
 const Hero = () => {
@@ -44,12 +45,18 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 lg:gap-4 justify-center lg:justify-start items-center mb-4 sm:mb-6 lg:mb-8 px-2 sm:px-4 lg:px-0">
-              <button className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-5 py-2.5 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-xl text-sm sm:text-base lg:text-lg font-semibold hover:from-blue-600 hover:to-cyan-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/25">
+              <Link
+                to="/login"
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-5 py-2.5 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-xl text-sm sm:text-base lg:text-lg font-semibold hover:from-blue-600 hover:to-cyan-500 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/25 text-center"
+              >
                 Start Trading Now
-              </button>
-              <button className="w-full sm:w-auto border-2 border-gray-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-xl text-sm sm:text-base lg:text-lg font-semibold hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300">
+              </Link>
+              <Link
+                to="/login"
+                className="w-full sm:w-auto border-2 border-gray-600 text-white px-5 py-2.5 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-xl text-sm sm:text-base lg:text-lg font-semibold hover:border-blue-500 hover:bg-blue-500/10 transition-all duration-300 text-center"
+              >
                 Watch Demo
-              </button>
+              </Link>
             </div>
 
             {/* Trust Features */}
