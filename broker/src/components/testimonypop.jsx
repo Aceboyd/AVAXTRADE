@@ -33,7 +33,7 @@ export default function TestimonyPop() {
   const current = testimonies[index];
 
   return (
-    <div className="fixed bottom-6 left-6 z-50">
+    <div className="fixed bottom-4 left-4 z-50">
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
@@ -41,14 +41,18 @@ export default function TestimonyPop() {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -200, opacity: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-gray-900/90 backdrop-blur-md rounded-2xl px-4 py-3 w-72 border border-blue-500/40 shadow-lg"
+          className="
+            bg-gray-900/90 backdrop-blur-md rounded-xl border border-blue-500/40 shadow-lg
+            px-3 py-2 w-56 text-xs
+            sm:px-4 sm:py-3 sm:w-72 sm:text-sm
+          "
         >
-          <p className="text-sm font-semibold text-white">
+          <p className="font-semibold text-white">
             {current.name} from{" "}
             <span className="text-cyan-400">{current.country}</span>
           </p>
-          <p className="text-xs text-gray-300">
-            Just invested{" "}
+          <p className="text-gray-300">
+            Just earned{" "}
             <span className="font-bold bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
               ${current.amount.toLocaleString()}
             </span>
