@@ -5,7 +5,10 @@ const YouTubeVideo = () => {
     <section className="py-10 sm:py-20 bg-gray-900/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
+          <h2
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6"
+            style={{ fontFamily: "'Bodoni Moda', serif" }}
+          >
             Learn Crypto for Beginners
             <span className="block bg-gradient-to-r from-blue-500 to-cyan-400 bg-clip-text text-transparent">
               Watch Now
@@ -15,10 +18,14 @@ const YouTubeVideo = () => {
             Discover the basics of cryptocurrency with this beginner-friendly video. Click play to start learning!
           </p>
         </div>
+
         <div className="relative max-w-full sm:max-w-4xl mx-auto">
           <div className="bg-gradient-to-r from-blue-500 to-cyan-400 p-1 rounded-2xl sm:rounded-3xl">
             <div className="bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden">
-              <div className="relative" style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}>
+              <div
+                className="relative"
+                style={{ paddingBottom: '56.25%' /* 16:9 aspect ratio */ }}
+              >
                 <iframe
                   className="absolute inset-0 w-full h-full"
                   src="https://www.youtube.com/embed/zJBef4i57zU"
