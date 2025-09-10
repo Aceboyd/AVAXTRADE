@@ -2,16 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>AVAXTRADE - Secure Cryptocurrency Trading Platform</title>
+
+    <!-- Favicon setup -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
     <style>
       /* Ensure body takes full height and avoids overflow issues */
       body {
         margin: 0;
         padding: 0;
         min-height: 100vh;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
       }
 
       /* Ensure #root is flexible for mobile */
@@ -40,17 +49,31 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
     <!-- Smartsupp Live Chat script -->
     <script type="text/javascript">
       var _smartsupp = _smartsupp || {};
       _smartsupp.key = 'd4faad788e23eeaefffc6c12279dad427163dd83';
-      window.smartsupp||(function(d) {
-        var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-        s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-        c.type='text/javascript';c.charset='utf-8';c.async=true;
-        c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-      })(document);
+      window.smartsupp ||
+        (function (d) {
+          var s,
+            c,
+            o = (smartsupp = function () {
+              o._.push(arguments);
+            });
+          o._ = [];
+          s = d.getElementsByTagName('script')[0];
+          c = d.createElement('script');
+          c.type = 'text/javascript';
+          c.charset = 'utf-8';
+          c.async = true;
+          c.src = 'https://www.smartsuppchat.com/loader.js?';
+          s.parentNode.insertBefore(c, s);
+        })(document);
     </script>
-    <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
+    <noscript
+      >Powered by
+      <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript
+    >
   </body>
 </html>
