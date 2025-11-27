@@ -25,21 +25,22 @@ const Withdrawals = () => {
     setError(null);
 
     try {
-      await apiClient.post('/withdraw/', {
-        network: selectedNetwork,
-        amount: withdrawalData.amount,
-        address: withdrawalData.address
-      });
+  await apiClient.post('/withdraw/', {
+    amount: withdrawalData.amount,
+    crypto_type: selectedNetwork,        // <-- updated key
+    withdrawal_address: withdrawalData.address // <-- updated key
+  });
 
-      setWithdrawalData({ amount: '', address: '' });
-      setWithdrawalStatus('completed');
-      alert('Withdrawal request submitted successfully');
-    } catch (err) {
-      setError('Failed to submit withdrawal: ' + (err.response?.data?.message || err.message));
-      setWithdrawalStatus('failed');
-    } finally {
-      setIsSubmitting(false);
-    }
+  setWithdrawalData({ amount: '', address: '' });
+  setWithdrawalStatus('completed');
+  alert('Withdrawal request submitted successfully');
+} catch (err) {
+  setError('Failed to submit withdrawal: ' + (err.response?.data?.message || err.message));
+  setWithdrawalStatus('failed');
+} finally {
+  setIsSubmitting(false);
+}
+
   };
 
   return (
