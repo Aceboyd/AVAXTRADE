@@ -11,10 +11,10 @@ const Deposits = () => {
       'BTC': 'bc1q5nq0zvaachxvr0w8375r3y6zq3m3r07e0zwrrm',
       'ETH': '0x25d1129d0f86a389AaC0E8e9008f02A21bBC3617',
       'SOL': 'BtFgBXXcofS4BFogY9heEK9pSR9zZmo4NHtSNQ7MC5MZ',
-      'TRON': 'LWh7E38D76iuihP2pvGybc4dgn2Lgi2Y2z',
-      'LTC': 'THW64yhsfjKLkgaEiLB97CgVE8kvnSuV5e'
+      'TRON': 'THW64yhsfjKLkgaEiLB97CgVE8kvnSuV5e',
+      'LTC': 'LWh7E38D76iuihP2pvGybc4dgn2Lgi2Y2z'
     };
-    return addresses[network] || '';
+    return addresses[network];
   };
 
   const copyToClipboard = (text) => {
