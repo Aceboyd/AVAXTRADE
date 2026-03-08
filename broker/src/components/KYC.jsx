@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
 import { Shield, AlertCircle } from 'lucide-react';
-import { apiClient } from '../utils/api';
+import axios from 'axios';
 
 const KYC = ({ user, kycStatus, setKycStatus }) => {
   const [kycData, setKycData] = useState({ document: null });
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Helper to get the auth token from storage
+  const getAuthHeaders = () => {
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    if (!token) {
+      console.warn('No authentication token found in storage');
+      return {};
+    }
+    return {
+      Authorization: `Token ${token}`,  // Standard for DRF TokenAuthentication or Knox
+    };
+  };
 
   const handleKycSubmit = async (e) => {
     e.preventDefault();
@@ -20,33 +32,73 @@ const KYC = ({ user, kycStatus, setKycStatus }) => {
       return;
     }
 
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    if (!token) {
+      setError('You are not logged in. Please log in again.');
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
 
     const formData = new FormData();
-    formData.append('image_url', kycData.document);  // Use field name expected by backend
-    formData.append('user', user.id);                // Or user.email / username if needed
+    formData.append('image_url', kycData.document);
+    formData.append('user', user.id);  // Try this first (user ID as integer/string)
 
     try {
-      const response = await apiClient.post('https://avaxbacklog.onrender.com/kyc/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'https://avaxbacklog.onrender.com/kyc/',
+        formData,
+        {
+          headers: getAuthHeaders(),
+          timeout: 30000,
+        }
+      );
 
       setKycData({ document: null });
       setKycStatus('in review');
       alert('KYC document submitted successfully');
-      console.log('Response:', response.data);
+      console.log('KYC Response:', response.data);
     } catch (err) {
-      const message = err.response?.data?.message || err.response?.data || err.message;
+      let message = 'Unknown error';
+
+      if (err.response) {
+        console.log('Full error response:', err.response.data);  // Check this in browser console!
+
+        if (err.response.status === 401) {
+          message = 'Authentication failed (401 Unauthorized). Possible reasons:\n- Token is missing, invalid, or expired.\n- Log out and log in again to get a fresh token.\n- Check if token is correctly saved in localStorage/sessionStorage after login.';
+        } else if (err.response.status === 400) {
+          // Improved parsing of DRF-style errors
+          const data = err.response.data;
+          const errors = [];
+
+          if (data?.detail) errors.push(data.detail);
+          if (data?.message) errors.push(data.message);
+          if (data?.non_field_errors) errors.push(data.non_field_errors.join(' '));
+          if (data?.image_url) errors.push('image_url: ' + data.image_url.join(' '));
+          if (data?.user) errors.push('user: ' + data.user.join(' '));
+
+          // Fallback: stringify all
+          if (errors.length === 0) errors.push(JSON.stringify(data));
+
+          message = 'Bad request (400). Validation error: ' + errors.join(' | ');
+        } else {
+          message = `Server error ${err.response.status}: ${JSON.stringify(err.response.data)}`;
+        }
+      } else if (err.request) {
+        message = 'No response from server. Check internet or server might be sleeping (Render free tier).';
+      } else {
+        message = err.message;
+      }
+
       setError('Failed to submit KYC document: ' + message);
-      console.error('KYC submit error:', err.response?.data);
+      console.error('KYC submit error:', err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // ... rest of the component (progress, UI, etc.) remains the same
   const kycProgress = {
     rejected: { progress: 0, label: 'Rejected - Please resubmit documents', color: 'bg-red-500' },
     pending: { progress: 0, label: 'Pending - Upload your documents', color: 'bg-yellow-500' },
@@ -88,7 +140,7 @@ const KYC = ({ user, kycStatus, setKycStatus }) => {
         {error && (
           <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-2">
             <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-            <div className="text-sm text-red-800">{error}</div>
+            <div className="text-sm text-red-800 whitespace-pre-line">{error}</div>
           </div>
         )}
 

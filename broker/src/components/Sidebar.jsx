@@ -1,14 +1,23 @@
 import React from 'react';
-import { TrendingUp, Download, Upload, Shield, Lock, History, Settings } from 'lucide-react';
+import PropTypes from 'prop-types';
+import { TrendingUp, Download, Upload, Shield, Lock, History, Settings, BarChart3 } from 'lucide-react';
 
 const iconMap = {
-  TrendingUp, Download, Upload, Shield, Lock, History, Settings
+  TrendingUp,
+  Download,
+  Upload,
+  Shield,
+  Lock,
+  History,
+  Settings,
+  BarChart3
 };
 
 const sidebarItems = [
   { id: 'overview', label: 'Overview', icon: 'TrendingUp' },
   { id: 'deposits', label: 'Deposits', icon: 'Download' },
   { id: 'withdrawals', label: 'Withdrawals', icon: 'Upload' },
+  { id: 'invest', label: 'Invest', icon: 'BarChart3' },
   { id: 'kyc', label: 'KYC Verification', icon: 'Shield' },
   { id: 'security', label: 'Security', icon: 'Lock' },
   { id: 'history', label: 'Transaction History', icon: 'History' },
@@ -20,8 +29,10 @@ const Sidebar = ({ activeTab, setActiveTab, kycStatus, darkMode }) => {
     <nav className="space-y-2">
       {sidebarItems.map((item) => {
         const IconComponent = iconMap[item.icon];
-        const isDisabled = item.id === 'kyc' && (kycStatus === 'in review' || kycStatus === 'approved');
-        
+        const isDisabled =
+          item.id === 'kyc' &&
+          (kycStatus === 'in review' || kycStatus === 'approved');
+
         return (
           <button
             key={item.id}
@@ -33,12 +44,12 @@ const Sidebar = ({ activeTab, setActiveTab, kycStatus, darkMode }) => {
               isDisabled
                 ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 : activeTab === item.id
-                  ? darkMode
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-blue-50 text-blue-700 border-blue-200'
-                  : darkMode
-                    ? 'text-gray-400 hover:text-white hover:bg-gray-700'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                ? darkMode
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-50 text-blue-700 border-blue-200'
+                : darkMode
+                ? 'text-gray-400 hover:text-white hover:bg-gray-700'
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <IconComponent className="w-5 h-5" />
@@ -48,6 +59,13 @@ const Sidebar = ({ activeTab, setActiveTab, kycStatus, darkMode }) => {
       })}
     </nav>
   );
+};
+
+Sidebar.propTypes = {
+  activeTab: PropTypes.string.isRequired,
+  setActiveTab: PropTypes.func.isRequired,
+  kycStatus: PropTypes.string,
+  darkMode: PropTypes.bool
 };
 
 export default Sidebar;

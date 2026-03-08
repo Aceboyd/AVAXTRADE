@@ -6,6 +6,7 @@ import Header from '../components/Header2';
 import Sidebar from '../components/Sidebar';
 import MobileMenu from '../components/MobileMenu';
 import Overview from '../components/Overview';
+import Invest from '../components/invest';
 import Deposits from '../components/Deposits';
 import Withdrawals from '../components/Withdrawals';
 import KYC from '../components/KYC';
@@ -210,6 +211,8 @@ const Dashboard = () => {
         return <Deposits />;
       case 'withdrawals':
         return <Withdrawals />;
+      case 'invest':
+        return <Invest />;
       case 'kyc':
         return <KYC user={user} kycStatus={kycStatus} setKycStatus={setKycStatus} />;
       case 'security':
@@ -237,7 +240,7 @@ const Dashboard = () => {
 
   return (
     <ErrorBoundary>
-      <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
         <Header
           darkMode={darkMode}
           setDarkMode={setDarkMode}
@@ -259,9 +262,19 @@ const Dashboard = () => {
           handleLogout={handleLogout}
         />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
-            <div className="hidden lg:block lg:col-span-1">
+        <div className="flex min-h-screen">
+          {/* Desktop sidebar — fixed position */}
+          <aside
+  className={`
+    hidden md:block
+    fixed inset-y-0 left-0 z-20
+    w-64 lg:w-72 xl:w-80
+    border-r border-gray-200
+    overflow-hidden    // ← remove or change this if present
+  `}
+      >
+      <div className="h-screen overflow-y-auto bg-inherit">   {/* ← important */}
+        <div className="p-4 md:p-6">
               <Sidebar
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -269,11 +282,21 @@ const Dashboard = () => {
                 darkMode={darkMode}
               />
             </div>
+            </div>
+          </aside>
 
-            <div className="lg:col-span-3">
+          {/* Main content — shifted right on desktop */}
+          <main
+            className={`
+              flex-1
+              md:ml-64 lg:ml-72 xl:ml-80
+              min-h-screen
+            `}
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 lg:py-10">
               {renderContent()}
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </ErrorBoundary>
