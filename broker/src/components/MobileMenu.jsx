@@ -1,14 +1,15 @@
 import React from 'react';
-import { Wallet, X, User, LogOut, RefreshCw, TrendingUp, Download, Upload, Shield, Lock, History, Settings } from 'lucide-react';
+import { Wallet, X, User, LogOut, RefreshCw, TrendingUp, Download, Upload, Shield, Lock, History, Settings, BarChart3 } from 'lucide-react';
 
 const iconMap = {
-  TrendingUp, Download, Upload, Shield, Lock, History, Settings
+  TrendingUp, Download, Upload, Shield, Lock, History, Settings, BarChart3
 };
 
 const sidebarItems = [
   { id: 'overview', label: 'Overview', icon: 'TrendingUp' },
   { id: 'deposits', label: 'Deposits', icon: 'Download' },
   { id: 'withdrawals', label: 'Withdrawals', icon: 'Upload' },
+  { id: 'invest', label: 'Invest', icon: 'BarChart3' },
   { id: 'kyc', label: 'KYC Verification', icon: 'Shield' },
   { id: 'security', label: 'Security', icon: 'Lock' },
   { id: 'history', label: 'Transaction History', icon: 'History' },
