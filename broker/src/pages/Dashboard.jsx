@@ -212,7 +212,7 @@ const Dashboard = () => {
       case 'withdrawals':
         return <Withdrawals />;
       case 'invest':
-        return <Invest />;
+        return <Invest walletData={walletData} />;
       case 'kyc':
         return <KYC user={user} kycStatus={kycStatus} setKycStatus={setKycStatus} />;
       case 'security':

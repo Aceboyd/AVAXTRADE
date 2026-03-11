@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import { apiClient } from '../utils/api';
 
-const Invest = () => {
+const Invest = ({ walletData }) => {
   const [activeCategory, setActiveCategory] = useState("Trading");
+  const [amount, setAmount] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
     "Trading",
@@ -137,6 +140,34 @@ const Invest = () => {
 
   const currentPlans = plansByCategory[activeCategory] || [];
 
+  const handleBuy = async () => {
+    if (!amount) {
+      alert("Please enter an amount");
+      return;
+    }
+
+    if (parseFloat(amount) > parseFloat(walletData?.main_balance || 0)) {
+      alert("Insufficient balance");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await apiClient.post('/invest/', {
+        amount: amount,
+        plan: 'Mining Power',
+        type: 'mining'
+      });
+      alert("Investment successful");
+      setAmount("");
+      window.location.reload();
+    } catch (error) {
+      alert(error.response?.data?.message || "Investment failed");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-900 p-6 md:p-8 lg:p-10">
       <div className="max-w-6xl mx-auto">
@@ -207,11 +238,13 @@ const Invest = () => {
           </h2>
 
           <p className="mb-4 text-gray-600">
-            Available Balance: <span className="text-gray-900 font-medium">$0.00</span>
+            Available Balance: <span className="text-gray-900 font-medium">${walletData?.main_balance || '0.00'}</span>
           </p>
 
           <input
             type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
             placeholder="Amount from Balance ($)"
             className="w-full p-3.5 mb-5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 outline-none"
           />
@@ -223,8 +256,12 @@ const Invest = () => {
             Allocate your coins and enhance your mining performance
           </p>
 
-          <button className="w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition">
-            Buy
+          <button
+            onClick={handleBuy}
+            disabled={isSubmitting}
+            className={`w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {isSubmitting ? 'Processing...' : 'Buy'}
           </button>
         </div>
       </div>
