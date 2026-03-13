@@ -42,7 +42,7 @@ const History = () => {
           id,
           type: tx.transaction_type || 'unknown',
           network: tx.crypto_type || 'n/a',
-          amount: tx.amount ? parseFloat(tx.amount).toFixed(8) : '0.00000000',
+          amount: tx.amount ? parseFloat(tx.amount).toFixed(2) : '0.00',
           status: tx.transaction_status || 'pending',
           time: tx.created_at
             ? new Date(tx.created_at).toLocaleString('en-US', {
@@ -125,6 +125,7 @@ const History = () => {
                 </div>
                 <div className="text-right">
                   <div className="font-medium text-gray-900 text-sm sm:text-base">
+                    {(tx.type || '').toLowerCase() === 'investment' ? '$' : ''}
                     {tx.amount}
                   </div>
                   <div className="mt-1">

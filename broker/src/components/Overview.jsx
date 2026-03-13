@@ -14,13 +14,20 @@ const Overview = ({
   kycStatus,
   isLoading,
   error,
+  externalTransactions = [],
   apiErrors
 }) => {
   const [cryptoPrices, setCryptoPrices] = useState({});
   const [lastUpdated, setLastUpdated] = useState(null);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState(externalTransactions);
   const [txLoading, setTxLoading] = useState(true);
   const [txError, setTxError] = useState(null);
+
+  useEffect(() => {
+    if (externalTransactions && externalTransactions.length > 0) {
+      setTransactions(externalTransactions);
+    }
+  }, [externalTransactions]);
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -36,7 +43,7 @@ const Overview = ({
             id,
             type: tx.transaction_type || 'unknown',
             network: tx.crypto_type || 'n/a',
-            amount: tx.amount ? parseFloat(tx.amount).toFixed(8) : '0.00000000',
+            amount: tx.amount ? parseFloat(tx.amount).toFixed(2) : '0.00',
             status: tx.transaction_status === 'confirmed' ? 'completed' : tx.transaction_status || 'pending',
             time: tx.created_at
               ? new Date(tx.created_at).toLocaleString('en-US', { timeZone: 'Africa/Lagos' })
@@ -256,7 +263,10 @@ const Overview = ({
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium text-gray-900">{tx.amount}</div>
+                    <div className="text-sm font-medium text-gray-900">
+                      {(tx.type || '').toLowerCase() === 'investment' ? '$' : ''}
+                      {tx.amount}
+                    </div>
                     <div className="mt-1">
                       <StatusBadge status={tx.status.toLowerCase()} />
                     </div>

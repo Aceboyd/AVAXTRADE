@@ -112,7 +112,7 @@ const Dashboard = () => {
             id: tx.id,
             type: tx.transaction_type.toLowerCase(),
             network: tx.crypto_type.toUpperCase(),
-            amount: parseFloat(tx.amount).toFixed(8),
+            amount: parseFloat(tx.amount).toFixed(2),
             status: tx.transaction_status.toLowerCase(),
             time: new Date(tx.created_at).toLocaleString('en-US', { timeZone: 'Africa/Lagos' }),
             txId: tx.id.slice(0, 6) + '...' + tx.id.slice(-6)
@@ -203,7 +203,7 @@ const Dashboard = () => {
             kycStatus={kycStatus}
             isLoading={isLoading}
             error={error}
-            transactions={transactions}
+            externalTransactions={transactions}
             apiErrors={apiErrors}
           />
         );
@@ -212,7 +212,13 @@ const Dashboard = () => {
       case 'withdrawals':
         return <Withdrawals />;
       case 'invest':
-        return <Invest walletData={walletData} />;
+        return (
+          <Invest
+            walletData={walletData}
+            setWalletData={setWalletData}
+            setTransactions={setTransactions}
+          />
+        );
       case 'kyc':
         return <KYC user={user} kycStatus={kycStatus} setKycStatus={setKycStatus} />;
       case 'security':
@@ -231,7 +237,7 @@ const Dashboard = () => {
             kycStatus={kycStatus}
             isLoading={isLoading}
             error={error}
-            transactions={transactions}
+            externalTransactions={transactions}
             apiErrors={apiErrors}
           />
         );

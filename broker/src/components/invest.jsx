@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { apiClient } from '../utils/api';
 
-const Invest = ({ walletData }) => {
+const Invest = ({ walletData, setWalletData, setTransactions }) => {
   const [activeCategory, setActiveCategory] = useState("Trading");
   const [amount, setAmount] = useState("");
+  const [cryptoType, setCryptoType] = useState("BTC");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
@@ -146,21 +147,59 @@ const Invest = ({ walletData }) => {
       return;
     }
 
-    if (parseFloat(amount) > parseFloat(walletData?.main_balance || 0)) {
+    const numericAmount = parseFloat(amount);
+    if (Number.isNaN(numericAmount) || numericAmount <= 0) {
+      alert("Please enter a valid amount");
+      return;
+    }
+
+    if (!cryptoType) {
+      alert("Please select a crypto plan");
+      return;
+    }
+
+    if (numericAmount > parseFloat(walletData?.main_balance || 0)) {
       alert("Insufficient balance");
       return;
     }
 
     setIsSubmitting(true);
     try {
-      await apiClient.post('/invest/', {
-        amount: amount,
-        plan: 'Mining Power',
-        type: 'mining'
+      await apiClient.post('/auth/investment/', {
+        crypto_type: cryptoType,
+        amount: amount
       });
+
+      if (setWalletData) {
+        setWalletData((prev) => {
+          const prevMain = parseFloat(prev?.main_balance || 0);
+          const prevProfit = parseFloat(prev?.profit_balance || 0);
+          const nextMain = Math.max(prevMain - numericAmount, 0);
+          const nextTotal = nextMain + prevProfit;
+          return {
+            ...prev,
+            main_balance: nextMain.toFixed(2),
+            total_balance: nextTotal.toFixed(2),
+          };
+        });
+      }
+
+      if (setTransactions) {
+        const now = new Date();
+        const localTx = {
+          id: `local-${now.getTime()}`,
+          type: 'investment',
+          network: cryptoType,
+          amount: numericAmount.toFixed(2),
+          status: 'pending',
+          time: now.toLocaleString(),
+          txId: `local-${now.getTime()}`,
+        };
+        setTransactions((prev) => [localTx, ...prev]);
+      }
+
       alert("Investment successful");
       setAmount("");
-      window.location.reload();
     } catch (error) {
       alert(error.response?.data?.message || "Investment failed");
     } finally {
@@ -248,6 +287,21 @@ const Invest = ({ walletData }) => {
             placeholder="Amount from Balance ($)"
             className="w-full p-3.5 mb-5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 outline-none"
           />
+
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Crypto Plan
+            </label>
+            <select
+              value={cryptoType}
+              onChange={(e) => setCryptoType(e.target.value)}
+              className="w-full p-3.5 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 outline-none bg-white"
+            >
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="USDT">USDT</option>
+            </select>
+          </div>
 
           <p className="mb-2 text-gray-600">Rate: $1000 / 200TH/s</p>
           <p className="mb-4 text-blue-600 font-medium">✓ Currently all Hashpower are in stock</p>
